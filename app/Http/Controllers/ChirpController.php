@@ -31,27 +31,29 @@ class ChirpController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-public function store(Request $request)
-{
-    // Validate the request
-    $validated = $request->validate([
-        'message' => 'required|string|max:255',
-    ],
-    [
-        'message.required' => 'Please enter a message.',
-        'message.string' => 'The message must be a string.',
-        'message.max' => 'The message may not be greater than 255 characters.',
-    ]);
+    public function store(Request $request)
+    {
+        // Validate the request
+        $validated = $request->validate(
+            [
+                'message' => 'required|string|max:255',
+            ],
+            [
+                'message.required' => 'Please enter a message.',
+                'message.string' => 'The message must be a string.',
+                'message.max' => 'The message may not be greater than 255 characters.',
+            ]
+        );
 
-    // Create the chirp (no user for now - we'll add auth later)
-    \App\Models\Chirp::create([
-        'message' => $validated['message'],
-        'user_id' => null, // We'll add authentication in lesson 11
-    ]);
+        // Create the chirp (no user for now - we'll add auth later)
+        \App\Models\Chirp::create([
+            'message' => $validated['message'],
+            'user_id' => null, // We'll add authentication in lesson 11
+        ]);
 
-    // Redirect back to the feed
-    return redirect('/')->with('success', 'Chirp created!');
-}
+        // Redirect back to the feed
+        return redirect('/')->with('success', 'Chirp created!');
+    }
 
     /**
      * Display the specified resource.
@@ -64,24 +66,29 @@ public function store(Request $request)
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Chirp $chirp)
     {
-        //
+        // We'll add authorization in lesson 11
+        return view('chirps.edit', compact('chirp'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Chirp $chirp)
     {
-        //
+        // Validate
+        $validated = $request->validate([
+            'message' => 'required|string|max:255',
+        ]);
+
+        // Update
+        $chirp->update($validated);
+
+        return redirect('/')->with('success', 'Chirp updated!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(Chirp $chirp)
     {
-        //
+        $chirp->delete();
+
+        return redirect('/')->with('success', 'Chirp deleted!');
     }
 }
