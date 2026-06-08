@@ -54,3 +54,51 @@
         </div>
     </div>
 </div>
+
+<div class="mt-4 space-y-4 border-t pt-4">
+    @if ($chirp->replies->isNotEmpty())
+        <div class="space-y-3">
+            @foreach ($chirp->replies as $reply)
+                <div class="rounded-xl bg-base-200 p-3">
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="font-semibold">
+                            {{ $reply->user?->name ?? 'Anonymous' }}
+                        </span>
+                        <span class="text-base-content/60">·</span>
+                        <span class="text-base-content/60">
+                            {{ $reply->created_at->diffForHumans() }}
+                        </span>
+                    </div>
+
+                    <p class="mt-1 text-sm">
+                        {{ $reply->message }}
+                    </p>
+                </div>
+            @endforeach
+        </div>
+    @endif
+
+    @auth
+        <form method="POST" action="/chirps/{{ $chirp->id }}/replies">
+            @csrf
+
+            <div class="form-control w-full">
+                <textarea name="reply_message"
+                    class="textarea textarea-bordered w-full resize-none @error('reply_message') textarea-error @enderror"
+                    rows="2" maxlength="255" placeholder="Write a reply..." required>{{ old('reply_message') }}</textarea>
+
+                @error('reply_message')
+                    <div class="label">
+                        <span class="label-text-alt text-error">{{ $message }}</span>
+                    </div>
+                @enderror
+            </div>
+
+            <div class="mt-3 flex justify-end">
+                <button type="submit" class="btn btn-primary btn-xs">
+                    Reply
+                </button>
+            </div>
+        </form>
+    @endauth
+</div>

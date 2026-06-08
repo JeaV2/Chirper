@@ -12,7 +12,7 @@ class ChirpController extends Controller
      */
     public function index()
     {
-        $chirps = Chirp::with('user')
+        $chirps = Chirp::with('user', 'replies.user')
             ->latest()
             ->take(50)
             ->get();

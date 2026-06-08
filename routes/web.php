@@ -5,6 +5,7 @@ use App\Http\Controllers\ChirpController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\Login;
 use App\Http\Controllers\Auth\Logout;
+use App\Http\Controllers\ReplyController;
 
 Route::get('/', [ChirpController::class, 'index']);
 Route::view('/register', 'auth.register')
@@ -20,6 +21,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/chirps/{chirp}/edit', [ChirpController::class, 'edit']);
     Route::put('/chirps/{chirp}', [ChirpController::class, 'update']);
     Route::delete('/chirps/{chirp}', [ChirpController::class, 'destroy']);
+    Route::post('/chirps/{chirp}/replies', [ReplyController::class, 'store']);
 });
 
 // Login routes
